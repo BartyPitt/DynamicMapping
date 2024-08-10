@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DynamicMapping.Serializers
 {
-    internal interface I_Seralizer
+    internal interface IMapper
     {
-        public T? Deseralize<T>(string InputObject);
+        public T? Deserialize<T>(string InputObject);
         public string Serialize(object InputObject);
     }
 }

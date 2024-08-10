@@ -2,10 +2,10 @@
 
 namespace DynamicMapping.Serializers
 {
-    internal class jsonSeralizer : I_Seralizer
+    internal class JsonMapper : IMapper
     {
-        public jsonSeralizer() { }
-        public T? Deseralize<T>(string InputObject)
+        public JsonMapper() { }
+        public T? Deserialize<T>(string InputObject)
         {
             return JsonSerializer.Deserialize<T>(InputObject);
         }

@@ -4,11 +4,11 @@ using DynamicMapping.Serializers;
 
 namespace DynamicMapping
 {
-    internal class mapHandler
+    internal class MapHandler
     {
-        private static readonly Dictionary<Seralizers, Func<I_Seralizer>> SeralizerClasses = new()
+        private static readonly Dictionary<Seralizers, Func<I_Mapper>> SeralizerClasses = new()
         {
-            { Seralizers.Json , ()=> new jsonSeralizer() }
+            { Seralizers.Json , ()=> new JsonMapper() }
         };
 
         private static readonly Dictionary<Models, Type> contextsTypes = new()
@@ -17,7 +17,7 @@ namespace DynamicMapping
         };
 
 
-        public static object map(object Data, string sourceType, string targetType, string context)
+        public static object Map(object Data, string sourceType, string targetType, string context)
         {
             if (!Enum.TryParse(sourceType, true, out Seralizers sourceTypeEnum))
             {
@@ -27,8 +27,8 @@ namespace DynamicMapping
             {
                 throw new NotSupportedException($"Target type {targetType} not supported");
             }
-            if (!Enum.TryParse(context, out Models context_type){
-                throw new NotSupportedException($"Conext type {context_type} not supported");
+            if (!Enum.TryParse(context, out Models context_type)){
+                throw new NotSupportedException($"Context type {context_type} not supported");
             }
             return map(Data, sourceTypeEnum, targetTypeEnum, context_type);
         }
@@ -41,8 +41,6 @@ namespace DynamicMapping
             }
 
             Data = Deseralize(Data, sourceType, context);
-
-            I_Seralizer Seralizer = targetSeralizer.Invoke();
             return Seralize(Data, targetType);
         }
 
@@ -54,23 +52,14 @@ namespace DynamicMapping
                 return Data;
             }
 
-            string DataString = Data?.ToString();
-
-            if (DataString is null)
-            {
-                throw new ArgumentException("Input data has evaluated to null");
-            }
+            string? DataString = (Data?.ToString()) ?? throw new ArgumentException("Input data has evaluated to null");
             if (!SeralizerClasses.TryGetValue(sourceType, out var sourceSeralizer))
             {
                 throw new NotImplementedException($"source Type {sourceType} not Implimented");
             }
 
-            I_Seralizer Deseralizer = sourceSeralizer.Invoke();
-            object? Output = GenericDeseralize(Deseralizer, DataString, Context);
-            if (Output is null)
-            {
-                throw new Exception("Unable to parse input data");
-            }
+            I_Mapper Deseralizer = sourceSeralizer.Invoke();
+            object? Output = GenericDeseralize(Deseralizer, DataString, Context) ?? throw new Exception("Unable to convert data to output format");
             return Output;
         }
 
@@ -84,27 +73,12 @@ namespace DynamicMapping
             {
                 throw new NotImplementedException($"target Type {targetType} not Implimented");
             }
-            object Output = Seralize(Data, targetType);
-            if (Output is null)
-            {
-                throw new Exception("Unable to Researlize output");
-            }
-            return Output;
+            I_Mapper Serializer = sourceSeralizer.Invoke();
+            object Output = GenericSeralize(,Data, targetType);
+            return Output is null ? throw new Exception("Unable to Researlize output") : Output;
         }
 
-        public static string Seralize(object Data, Seralizers targetType)
-        {
-            if (!SeralizerClasses.TryGetValue(targetType, out var targetSeralizer))
-            {
-                throw new NotImplementedException($"source Type {targetType} not Implimented");
-            }
-            I_Seralizer Seralizer = targetSeralizer.Invoke();
-            return Seralizer.Serialize(Data);
-        }
-
-
-
-        private static object? GenericDeseralize(I_Seralizer InputS, string Data, Type Context)
+        private static object? GenericDeseralize(I_Mapper InputS, string Data, Type Context)
         {
 
             MethodInfo? genericMethod = InputS.GetType().GetMethod("Deseralize");
@@ -112,7 +86,7 @@ namespace DynamicMapping
             return constructedMethod?.Invoke(InputS, [Data]);
         }
 
-        private static string? Seralize(I_Seralizer InputS, object Data, Type Context)
+        private static string? GenericSeralize(I_Mapper InputS, object Data, Type Context)
         {
 
             MethodInfo? genericMethod = InputS.GetType().GetMethod("Serialize");
