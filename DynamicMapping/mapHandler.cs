@@ -60,7 +60,7 @@ namespace DynamicMapping
             }
 
             IMapper Deserializer = sourceSeralizer.Invoke();
-            object? Output = Deserializer.Deserialize(DataString);
+            object? Output = Deserializer.Deserialize(DataString ,Context);
             return Output;
         }
 
@@ -70,11 +70,11 @@ namespace DynamicMapping
             {
                 return Data;
             }
-            if (!MapperConstructors.TryGetValue(targetType, out var targetSeralizer))
+            if (!MapperConstructors.TryGetValue(targetType, out var targetSerializer))
             {
                 throw new NotImplementedException($"target Type {targetType} not Implemented");
             }
-            IMapper Serializer = targetSeralizer.Invoke();
+            IMapper Serializer = targetSerializer.Invoke();
             object? Output = Serializer.Serialize(Data);
             return Output is null ? throw new Exception("Unable to Researlize output") : Output;
         }
