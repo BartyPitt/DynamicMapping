@@ -5,9 +5,9 @@ namespace DynamicMapping.Serializers
     internal class JsonMapper : IMapper
     {
         public JsonMapper() { }
-        public T? Deserialize<T>(string InputObject)
+        public object? Deserialize(string InputObject , Type type)
         {
-            return JsonSerializer.Deserialize<T>(InputObject);
+            return JsonSerializer.Deserialize(InputObject , type);
         }
         public string Serialize(object InputObject)
         {

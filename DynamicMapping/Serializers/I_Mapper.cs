@@ -8,7 +8,7 @@ namespace DynamicMapping.Serializers
 {
     internal interface IMapper
     {
-        public T? Deserialize<T>(string InputObject);
+        public object? Deserialize(string InputObject);
         public string Serialize(object InputObject);
     }
 }
