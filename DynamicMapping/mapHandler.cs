@@ -4,7 +4,7 @@ using DynamicMapping.Serializers;
 
 namespace DynamicMapping
 {
-    internal class MapHandler
+    public class MapHandler
     {
         private static readonly Dictionary<Serializes, Func<IMapper>> MapperConstructors = new()
         {
