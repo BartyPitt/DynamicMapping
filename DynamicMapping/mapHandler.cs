@@ -62,7 +62,7 @@ namespace DynamicMapping
         {
             if (!contextsTypes.TryGetValue(ContextType, out Type? context))
             {
-                throw new NotImplementedException($"context {ContextType} not Implimented");
+                throw new NotImplementedException($"context {ContextType} not Implemented");
             }
 
             Data = Deserialize(Data, sourceType, context);
@@ -88,14 +88,21 @@ namespace DynamicMapping
             string? DataString = (Data?.ToString()) ?? throw new ArgumentException("Input data cannot be parsed into string");
             if (!MapperConstructors.TryGetValue(sourceType, out var sourceSeralizer))
             {
-                throw new NotImplementedException($"source Type {sourceType} not Implimented");
+                throw new NotImplementedException($"source Type {sourceType} not Implemented");
             }
 
             IMapper Deserializer = sourceSeralizer.Invoke();
             object? Output = Deserializer.Deserialize(DataString ,Context);
             return Output;
         }
-
+        /// <summary>
+        /// Converts the input data form a neutral format into the desired output format.
+        /// </summary>
+        /// <param name="Data">The data in a neutral format</param>
+        /// <param name="targetType">The Serializer type</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException">The given Serializer has not be implemented</exception>
+        /// <exception cref="Exception">If there is an error when reserializing the output</exception>
         private static object Serialize(object Data , Serializes targetType)
         {
             if(targetType == Serializes.PredefinedModel)
@@ -108,7 +115,7 @@ namespace DynamicMapping
             }
             IMapper Serializer = targetSerializer.Invoke();
             object? Output = Serializer.Serialize(Data);
-            return Output is null ? throw new Exception("Unable to Researlize output") : Output;
+            return Output is null ? throw new Exception("Unable to ReSerialize output") : Output;
         }
 
         public enum Serializes
