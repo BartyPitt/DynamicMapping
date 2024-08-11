@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DynamicMapping.Models
 {
+    /// <summary>
+    /// A class containing the reservation infomation.
+    /// </summary>
     public class Reservation
     {
         public string? ClientName { get; set; }
