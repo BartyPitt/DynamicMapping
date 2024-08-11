@@ -12,10 +12,10 @@ namespace DynamicMapping
         /// <summary>
         /// A dictionary mapping the Serializes enum to constructors for the mapping classes.
         /// </summary>
-        private static readonly Dictionary<Serializes, Func<IMapper>> MapperConstructors = new()
+        private static readonly Dictionary<Mappers, Func<IMapper>> MapperConstructors = new()
         {
-            { Serializes.Json , ()=> new JsonMapper() },
-            { Serializes.Xml , ()=> new XMLMapper() }
+            { Mappers.Json , ()=> new JsonMapper() },
+            { Mappers.Xml , ()=> new XMLMapper() }
         };
         /// <summary>
         /// A mapping of the Models ENUM to the Model types.
@@ -36,11 +36,11 @@ namespace DynamicMapping
         /// <exception cref="NotSupportedException">When the data type is not supported.</exception>
         public static object Map(object Data, string sourceType, string targetType, string context)
         {
-            if (!Enum.TryParse(sourceType, true, out Serializes sourceTypeEnum))
+            if (!Enum.TryParse(sourceType, true, out Mappers sourceTypeEnum))
             {
                 throw new NotSupportedException($"Source type {sourceType} not supported");
             }
-            if (!Enum.TryParse(targetType, true, out Serializes targetTypeEnum))
+            if (!Enum.TryParse(targetType, true, out Mappers targetTypeEnum))
             {
                 throw new NotSupportedException($"Target type {targetType} not supported");
             }
@@ -58,7 +58,7 @@ namespace DynamicMapping
         /// <param name="context">The template that the data type follows.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException">When there is an implimentaiton of that converter.</exception>
-        public static object Map(object Data, Serializes sourceType, Serializes targetType, Models ContextType)
+        public static object Map(object Data, Mappers sourceType, Mappers targetType, Models ContextType)
         {
             if (!contextsTypes.TryGetValue(ContextType, out Type? context))
             {
@@ -78,9 +78,9 @@ namespace DynamicMapping
         /// <returns></returns>
         /// <exception cref="ArgumentException">When there is a failure to convert the data to a string.</exception>
         /// <exception cref="NotImplementedException"></exception>
-        private static object Deserialize(object Data, Serializes sourceType, Type Context)
+        private static object Deserialize(object Data, Mappers sourceType, Type Context)
         {
-            if (sourceType == Serializes.PredefinedModel)
+            if (sourceType == Mappers.PredefinedModel)
             {
                 return Data;
             }
@@ -103,9 +103,9 @@ namespace DynamicMapping
         /// <returns></returns>
         /// <exception cref="NotImplementedException">The given Serializer has not be implemented</exception>
         /// <exception cref="Exception">If there is an error when reserializing the output</exception>
-        private static object Serialize(object Data , Serializes targetType)
+        private static object Serialize(object Data , Mappers targetType)
         {
-            if(targetType == Serializes.PredefinedModel)
+            if(targetType == Mappers.PredefinedModel)
             {
                 return Data;
             }
@@ -118,7 +118,7 @@ namespace DynamicMapping
             return Output is null ? throw new Exception("Unable to ReSerialize output") : Output;
         }
 
-        public enum Serializes
+        public enum Mappers
         {
             Xml,
             Json,

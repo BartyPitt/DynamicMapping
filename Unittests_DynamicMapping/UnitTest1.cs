@@ -27,8 +27,8 @@ namespace Unittests_DynamicMapping
                 EndDate = new DateTime(3212, 5, 7),
             };
 
-            string XMLReservation = (string)MapHandler.Map(TestReservation, MapHandler.Serializes.PredefinedModel, MapHandler.Serializes.Xml, MapHandler.Models.Reservation);
-            string Json = (string)MapHandler.Map(TestReservation, MapHandler.Serializes.PredefinedModel, MapHandler.Serializes.Json, MapHandler.Models.Reservation);
+            string XMLReservation = (string)MapHandler.Map(TestReservation, MapHandler.Mappers.PredefinedModel, MapHandler.Mappers.Xml, MapHandler.Models.Reservation);
+            string Json = (string)MapHandler.Map(TestReservation, MapHandler.Mappers.PredefinedModel, MapHandler.Mappers.Json, MapHandler.Models.Reservation);
 
             Assert.IsTrue(!String.IsNullOrEmpty(XMLReservation));
             Assert.IsTrue(!String.IsNullOrEmpty(Json));
@@ -52,8 +52,8 @@ namespace Unittests_DynamicMapping
                 StartDate = new DateTime(1234, 9, 12),
                 EndDate = new DateTime(3210, 5, 7),
             };
-            string TestJson = (string)MapHandler.Map(TestReservation, MapHandler.Serializes.PredefinedModel, MapHandler.Serializes.Json, MapHandler.Models.Reservation);
-            Reservation NewReservation = (Reservation)MapHandler.Map(TestJson, MapHandler.Serializes.Json, MapHandler.Serializes.PredefinedModel, MapHandler.Models.Reservation);
+            string TestJson = (string)MapHandler.Map(TestReservation, MapHandler.Mappers.PredefinedModel, MapHandler.Mappers.Json, MapHandler.Models.Reservation);
+            Reservation NewReservation = (Reservation)MapHandler.Map(TestJson, MapHandler.Mappers.Json, MapHandler.Mappers.PredefinedModel, MapHandler.Models.Reservation);
             Assert.AreEqual(TestReservation.ClientName, NewReservation.ClientName);
             Assert.AreEqual(TestReservation.RoomNumber, NewReservation.RoomNumber);
             Assert.AreEqual(TestReservation.StartDate, NewReservation.StartDate);
